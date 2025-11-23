@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  qradar-mcp-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - HOST=0.0.0.0
+      - LOG_LEVEL=info
+      # These values should be overridden with actual values in a .env file
+      - QRADAR_API_BASE_URL=${QRADAR_API_BASE_URL}
+      - QRADAR_UI_BASE_URL=${QRADAR_UI_BASE_URL}
+      - QRADAR_API_TOKEN=${QRADAR_API_TOKEN}
+      - QRADAR_AUTH_HEADER=${QRADAR_AUTH_HEADER:-SEC}
+      - QRADAR_API_VERSION=${QRADAR_API_VERSION:-18.0}
+      - QRADAR_TLS_VERIFY=${QRADAR_TLS_VERIFY:-true}
+      - RATE_LIMIT_MAX=${RATE_LIMIT_MAX:-100}
+      - RATE_LIMIT_WINDOW_MS=${RATE_LIMIT_WINDOW_MS:-60000}
+      - RETRY_MAX_ATTEMPTS=${RETRY_MAX_ATTEMPTS:-3}
+      - RETRY_INITIAL_DELAY_MS=${RETRY_INITIAL_DELAY_MS:-1000}
+    volumes:
+      # Optional: Mount CA certificates if needed
+      - ${QRADAR_CA_PATH:-./ca.crt}:/app/ca.crt:ro
+    restart: unless-stopped
+
+# Made with Bob
